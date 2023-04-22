@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.render.*;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 import reborncore.common.fluid.container.FluidInstance;
 
 public class TRFluidSlotWidget extends SlotWidget {
@@ -77,9 +77,9 @@ public class TRFluidSlotWidget extends SlotWidget {
         }
 
         Sprite sprite = sprites[0];
-        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, sprite.getAtlas().getId());
+        RenderSystem.setShaderTexture(0, sprite.getAtlasId());
         Matrix4f model = matrices.peek().getPositionMatrix();
         int color = FluidVariantRendering.getColor(fluid);
         float r = (float) (color >> 16 & 0xFF) / 256.0F;
