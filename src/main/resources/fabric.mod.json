@@ -38,6 +38,8 @@
   },
   "suggests": {
     "indrev": "*",
-    "techreborn": "*"
+    "techreborn": "*",
+    "farmersdelight": "*",
+    "conjuring": "*"
   }
 }

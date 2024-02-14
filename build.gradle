@@ -20,6 +20,14 @@ if (System.getenv("RELEASE_TAG") != null) {
     println("Detected Local Version: $modVersion")
 }
 
+loom {
+    runs {
+        client {
+            programArgs("--width", "1280", "--height", "720")
+        }
+    }
+}
+
 archivesBaseName = project.archives_base_name
 version = modVersion
 group = project.maven_group
@@ -36,6 +44,14 @@ repositories {
         url "https://cursemaven.com"
         content {
             includeGroup "curse.maven"
+        }
+    }
+    maven {
+        // Industrial Revolution
+        name "Modrinth"
+        url "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
         }
     }
 
@@ -62,6 +78,50 @@ repositories {
             includeGroup 'dev.cafeteria'
             includeGroup 'me.luligabi'
             includeGroup 'net.adriantodt.fabricmc'
+        }
+    }
+
+    maven {
+        name = "Draylar"
+        url = "https://maven.draylar.dev/releases"
+        content {
+            includeGroup "dev.draylar"
+        }
+    }
+
+    maven {
+        name = "Wisp Forest"
+        url = "https://maven.wispforest.io/"
+        content {
+            includeGroup "io.wispforest"
+            includeGroup "io.wispforest.lavender-md"
+        }
+    }
+
+    maven {
+        // AE2
+        name "Modmaven"
+        url "https://modmaven.dev/"
+        content {
+            includeGroup 'appeng'
+        }
+    }
+
+    maven {
+        // Patchouli, required by Conjuring
+        name "BlameJared"
+        url "https://maven.blamejared.com/"
+        content {
+            includeGroup "vazkii.patchouli"
+        }
+    }
+
+    maven {
+        // Cloth Config, required by Conjuring
+        name "Shedaniel"
+        url "https://maven.shedaniel.me/"
+        content {
+            includeGroup "me.shedaniel.cloth"
         }
     }
 }
@@ -117,6 +177,24 @@ dependencies {
         dependencies.ext.mod "com.github.GabrielOlvH:magna:${project.magna_version}"
     }
 
+    // Farmer's Delight
+    if (farmers_delight_enabled.toBoolean()) {
+        dependencies.ext.mod "maven.modrinth:farmers-delight-fabric:${project.farmers_delight_version}"
+    }
+
+    // Conjuring
+    if (conjuring_enabled.toBoolean()) {
+        dependencies.ext.mod "maven.modrinth:conjuring:${project.conjuring_version}"
+        dependencies.ext.mod "io.wispforest:owo-lib:${project.owo_version}"
+        dependencies.ext.mod "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+        dependencies.ext.mod "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
+    }
+
+    // AE2
+    if (ae2_enabled.toBoolean()) {
+        dependencies.ext.mod "appeng:appliedenergistics2-fabric:${project.ae2_version}"
+    }
+
     //
     // Stuff we just want to have at runtime
     //
@@ -141,6 +219,15 @@ sourceSets {
             }
             if (!indrev_enabled.toBoolean()) {
                 exclude('com/kneelawk/extramodintegrations/indrev')
+            }
+            if (!farmers_delight_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/farmersdelight')
+            }
+            if (!conjuring_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/conjuring')
+            }
+            if (!ae2_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/appeng')
             }
         }
     }

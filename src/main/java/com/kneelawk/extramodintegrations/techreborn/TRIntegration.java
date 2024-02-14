@@ -2,7 +2,6 @@ package com.kneelawk.extramodintegrations.techreborn;
 
 import com.kneelawk.extramodintegrations.*;
 import com.kneelawk.extramodintegrations.util.LongHolder;
-
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.recipe.EmiRecipeSorting;
@@ -136,7 +135,7 @@ public class TRIntegration extends AbstractTRIntegration {
 
     @Override
     protected void registerImpl(EmiRegistry registry) {
-        ExMIMod.LOGGER.info("[Extra Mod Integrations] Loading TechReborn Integration...");
+        ExMIMod.logLoading("Tech Reborn");
 
         // Alloy Smelting
         registry.addCategory(ALLOY_SMELTER_CATEGORY);

@@ -2,11 +2,10 @@ package com.kneelawk.extramodintegrations.techreborn;
 
 import dev.emi.emi.api.render.EmiRender;
 import dev.emi.emi.api.widget.Bounds;
+import net.minecraft.client.util.math.MatrixStack;
 import reborncore.common.fluid.container.FluidInstance;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-
-import net.minecraft.client.util.math.MatrixStack;
 
 import com.kneelawk.extramodintegrations.util.CustomFluidSlotWidget;
 import com.kneelawk.extramodintegrations.util.UIUtils;
@@ -37,8 +36,8 @@ public class TRFluidSlotWidget extends CustomFluidSlotWidget {
         }
 
         if (fluid != null) {
-            UIUtils.renderFluid(matrices, fluid, x + 4, y + 4, FLUID_AREA_HEIGHT, fluidFullness * FLUID_AREA_HEIGHT,
-                FLUID_AREA_WIDTH);
+            UIUtils.renderFluid(matrices, fluid, x + 4, y + 4, FLUID_AREA_HEIGHT,
+                fluidFullness * FLUID_AREA_HEIGHT, FLUID_AREA_WIDTH);
         }
 
         if (drawBack) {

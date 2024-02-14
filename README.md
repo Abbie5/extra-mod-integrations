@@ -10,16 +10,20 @@ This mod is an addon for the powerful, new recipe viewer [EMI]. This addon adds 
 |--------------------------|:-------:|---------------------------|
 | Tech Reborn              |    ✅   | Added in `v0.1.0`         |
 | Advanced Reborn          |    🔲   |                           |
-| Modern Industrialization |    ❌   | MI supports EMI natively. |
 | Industrial Revolution    |    ✅   | Added in `v0.1.2`         |
 | Extra Generators         |    ⁇   |                           |
 | Hephaestus               |    🚧   |                           |
+| Farmers' Delight         |    ✅   | Added in `0.4.1`          |
+| Conjuring                |    ✅   | Added in `0.4.1`          |
+| Applied Energistics 2    |    🚧   | Support incomplete. Added in `0.4.2`. Does not support AE terminals. See [AE2 EMI Crafting]. |
 
 ✅: Support Completed<br>
 🚧: Support In Progress<br>
 🔲: Support Planned<br>
 ⁇: Maybe Support Eventually<br>
 ❌: Not Supported<br>
+
+[AE2 EMI Crafting]: https://modrinth.com/mod/ae2-emi-crafting
 
 ## Screenshots
 
