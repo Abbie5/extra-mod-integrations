@@ -163,14 +163,7 @@ repositories {
 
 dependencies {
     dependencies.ext.mod = { String dep ->
-        modCompileOnly(dep) {
-            exclude group: "net.fabricmc"
-            exclude group: "net.fabricmc.fabric-api"
-            exclude group: "io.github.prospector"
-            exclude group: "me.shedaniel"
-            exclude group: "mezz.jei"
-        }
-        modLocalRuntime(dep) {
+        modImplementation(dep) {
             exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
             exclude group: "io.github.prospector"
@@ -187,10 +180,8 @@ dependencies {
     }
 
     // Don't commute Fabric or FAPI to anything that depends on us
-    modCompileOnly "net.fabricmc:fabric-loader:${project.loader_version}"
-    modLocalRuntime "net.fabricmc:fabric-loader:${project.loader_version}"
-    modCompileOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modLocalRuntime "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // EMI
     modApi("dev.emi:emi-fabric:${project.emi_version}:api") {
