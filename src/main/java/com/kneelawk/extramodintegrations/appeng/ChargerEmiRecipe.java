@@ -12,13 +12,13 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import com.kneelawk.extramodintegrations.ExMIMod;
 import com.kneelawk.extramodintegrations.ExMITextures;
 
 public class ChargerEmiRecipe implements EmiRecipe {
-    private final Identifier id;
+    private final ResourceLocation id;
     private final EmiIngredient input;
     private final EmiStack output;
 
@@ -34,7 +34,7 @@ public class ChargerEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable Identifier getId() {
+    public @Nullable ResourceLocation getId() {
         return id;
     }
 

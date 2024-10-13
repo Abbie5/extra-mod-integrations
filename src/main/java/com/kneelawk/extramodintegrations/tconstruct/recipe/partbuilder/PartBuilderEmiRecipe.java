@@ -7,9 +7,9 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import slimeknights.tconstruct.TConstruct;
 import slimeknights.tconstruct.library.client.materials.MaterialTooltipCache;
 import slimeknights.tconstruct.library.materials.definition.MaterialVariant;
@@ -19,7 +19,7 @@ import slimeknights.tconstruct.plugin.jei.partbuilder.MaterialItemList;
 import java.util.List;
 
 public class PartBuilderEmiRecipe extends BasicEmiRecipe {
-    private static final Identifier BACKGROUND_LOC = TConstruct.getResource("textures/gui/jei/tinker_station.png");
+    private static final ResourceLocation BACKGROUND_LOC = TConstruct.getResource("textures/gui/jei/tinker_station.png");
     private static final String KEY_COST = TConstruct.makeTranslationKey("jei", "part_builder.cost");
 
     private final EmiIngredient pattern;
@@ -29,12 +29,12 @@ public class PartBuilderEmiRecipe extends BasicEmiRecipe {
     private final EmiIngredient patternItems;
     
     public static PartBuilderEmiRecipe of(IDisplayPartBuilderRecipe recipe) {
-        Identifier outputId = Registries.ITEM.getId(recipe.getOutput(null).getItem());
-        Identifier id = recipe.getId().withSuffixedPath("/" + outputId.getNamespace() + "/" + outputId.getPath());
+        ResourceLocation outputId = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem());
+        ResourceLocation id = recipe.getId().withSuffix("/" + outputId.getNamespace() + "/" + outputId.getPath());
         return new PartBuilderEmiRecipe(recipe, id);
     }
 
-    private PartBuilderEmiRecipe(IDisplayPartBuilderRecipe recipe, Identifier id) {
+    private PartBuilderEmiRecipe(IDisplayPartBuilderRecipe recipe, ResourceLocation id) {
         super(TiCCategories.PART_BUILDER, id, 121, 46);
 
         this.material = recipe.getMaterial();
@@ -44,7 +44,7 @@ public class PartBuilderEmiRecipe extends BasicEmiRecipe {
         this.pattern = new PatternEmiStack(recipe.getPattern());
 
         this.inputs = List.of(materialIngredient, patternItems);
-        this.outputs = List.of(EmiStack.of(recipe.getOutput(null)));
+        this.outputs = List.of(EmiStack.of(recipe.getResultItem(null)));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PartBuilderEmiRecipe extends BasicEmiRecipe {
         widgets.addTexture(BACKGROUND_LOC, 0, 0, 121, 46, 0, 117);
 
         widgets.addText(MaterialTooltipCache.getColoredDisplayName(material.getId()), 3, 2, -1, true);
-        widgets.addText(Text.translatable(KEY_COST, cost), 3, 35, 0x808080, false);
+        widgets.addText(Component.translatable(KEY_COST, cost), 3, 35, 0x808080, false);
 
         widgets.addSlot(materialIngredient, 24, 15)
                 .drawBack(false);

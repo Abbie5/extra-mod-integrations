@@ -13,11 +13,11 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class InscriberEmiRecipe implements EmiRecipe {
     private final InscriberRecipe recipe;
-    private final Identifier id;
+    private final ResourceLocation id;
     private final EmiIngredient middle;
     private final EmiIngredient top;
     private final EmiIngredient bottom;
@@ -53,7 +53,7 @@ public class InscriberEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable Identifier getId() {
+    public @Nullable ResourceLocation getId() {
         return id;
     }
 

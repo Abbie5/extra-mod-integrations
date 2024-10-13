@@ -159,6 +159,15 @@ repositories {
             includeGroup "me.shedaniel.cloth"
         }
     }
+
+    maven {
+        // ParchmentMC mappings
+        name "Parchment"
+        url "https://maven.parchmentmc.org"
+        content {
+            includeGroup "org.parchmentmc.data"
+        }
+    }
 }
 
 dependencies {
@@ -175,8 +184,8 @@ dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered {
-        mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-        mappings file("mappings/port-lib-fix.tiny")
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_version}@zip")
     }
 
     // Don't commute Fabric or FAPI to anything that depends on us

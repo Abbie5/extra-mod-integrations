@@ -14,9 +14,9 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
 
 import com.kneelawk.extramodintegrations.ExMIMod;
 import com.kneelawk.extramodintegrations.ExMITextures;
@@ -25,7 +25,7 @@ import static com.kneelawk.extramodintegrations.ExMIMod.gui;
 
 public class TransformEmiRecipe implements EmiRecipe {
     private final TransformRecipe recipe;
-    private final Identifier id;
+    private final ResourceLocation id;
     private final List<EmiIngredient> inputs;
     private final List<EmiStack> outputs;
     private final EmiIngredient fluidCircumstance;
@@ -63,7 +63,7 @@ public class TransformEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable Identifier getId() {
+    public @Nullable ResourceLocation getId() {
         return id;
     }
 

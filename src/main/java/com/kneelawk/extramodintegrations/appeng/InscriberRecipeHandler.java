@@ -8,7 +8,7 @@ import appeng.menu.implementations.InscriberMenu;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.world.inventory.Slot;
 
 public class InscriberRecipeHandler implements StandardRecipeHandler<InscriberMenu> {
     @Override

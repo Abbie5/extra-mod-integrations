@@ -3,7 +3,7 @@ package com.kneelawk.extramodintegrations.dimdoors.handler;
 import com.kneelawk.extramodintegrations.dimdoors.DimDoorsCategories;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.world.inventory.Slot;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
 
 import java.util.List;
