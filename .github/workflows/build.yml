@@ -12,9 +12,9 @@ jobs:
       matrix:
         # Use these Java versions
         java: [
-          17,    # Current Java LTS & minimum supported by Minecraft
-          18,
-          19
+          21,    # Current Java LTS & minimum supported by Minecraft
+          22,
+          23
         ]
         # and run on both Linux and Windows
         os: [ ubuntu-20.04, windows-2022 ]
@@ -42,8 +42,8 @@ jobs:
       - name: Build
         run: ./gradlew build --no-daemon
       - name: Capture Build Artifacts
-        if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
-        uses: actions/upload-artifact@v2
+        if: ${{ runner.os == 'Linux' && matrix.java == '21' }} # Only upload artifacts built from latest java on one OS
+        uses: actions/upload-artifact@v4
         with:
           name: Artifacts
           path: build/libs/
