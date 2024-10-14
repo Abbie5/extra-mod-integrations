@@ -8,41 +8,22 @@ on: [ pull_request, push ]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        # Use these Java versions
-        java: [
-          21,    # Current Java LTS & minimum supported by Minecraft
-          22,
-          23
-        ]
-        # and run on both Linux and Windows
-        os: [ ubuntu-20.04, windows-2022 ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1
-      - name: Gradle Cache
-        uses: actions/cache@v3
+        uses: gradle/actions/wrapper-validation@v3
+      - name: Setup JDK
+        uses: actions/setup-java@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            .gradle/loom-cache
-          key: ${{ runner.os }}-jdk${{ matrix.java }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '.github/workflows/build.yml') }}
-      - name: Setup JDK ${{ matrix.java }}
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      - name: Make Gradle Wrapper Executable
-        if: ${{ runner.os != 'Windows' }}
-        run: chmod +x ./gradlew
-      - name: Build
-        run: ./gradlew build --no-daemon
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build with Gradle
+        run: ./gradlew build
       - name: Capture Build Artifacts
-        if: ${{ runner.os == 'Linux' && matrix.java == '21' }} # Only upload artifacts built from latest java on one OS
         uses: actions/upload-artifact@v4
         with:
           name: Artifacts
