@@ -3,14 +3,15 @@ package com.kneelawk.extramodintegrations.techreborn;
 import com.kneelawk.extramodintegrations.util.UIUtils;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.widget.WidgetHolder;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import reborncore.common.crafting.RebornRecipe;
 
 public class SimpleTwoInputEmiRecipe extends TREmiRecipe<RebornRecipe> {
     private final EmiRecipeCategory category;
     private final int machineEnergy;
 
-    public SimpleTwoInputEmiRecipe(RebornRecipe recipe, EmiRecipeCategory category, int machineEnergy) {
-        super(recipe);
+    public SimpleTwoInputEmiRecipe(RecipeHolder<RebornRecipe> holder, EmiRecipeCategory category, int machineEnergy) {
+        super(holder);
         this.category = category;
         this.machineEnergy = machineEnergy;
         checkInputCount(2);
@@ -41,6 +42,6 @@ public class SimpleTwoInputEmiRecipe extends TREmiRecipe<RebornRecipe> {
         TRUIUtils.energyBar(widgets, recipe, machineEnergy, 0, 0);
         TRUIUtils.arrowRight(widgets, recipe, 16 + 18 + 4, (50 - 10) / 2);
         TRUIUtils.arrowLeft(widgets, recipe, 16 + 18 + 24 + 26 + 4, (50 - 10) / 2);
-        UIUtils.cookTime(widgets, recipe.getTime(), 16, 0);
+        UIUtils.cookTime(widgets, recipe.time(), 16, 0);
     }
 }

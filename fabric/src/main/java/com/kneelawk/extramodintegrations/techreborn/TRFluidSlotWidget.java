@@ -18,7 +18,7 @@ public class TRFluidSlotWidget extends CustomFluidSlotWidget {
     public static final float FLUID_AREA_HEIGHT = 48f;
 
     public TRFluidSlotWidget(FluidInstance fluid, int x, int y, long capacity) {
-        super(fluid.getVariant(), fluid.getAmount().getRawValue(), x, y, capacity);
+        super(fluid.fluidVariant(), fluid.getAmount().getRawValue(), x, y, capacity);
     }
 
     public TRFluidSlotWidget(FluidVariant fluid, long amount, int x, int y, long capacity) {

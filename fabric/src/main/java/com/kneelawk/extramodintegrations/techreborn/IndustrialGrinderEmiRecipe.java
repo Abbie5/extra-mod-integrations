@@ -3,26 +3,27 @@ package com.kneelawk.extramodintegrations.techreborn;
 import java.util.List;
 import java.util.stream.Stream;
 
+import dev.emi.emi.api.FabricEmiStack;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import reborncore.common.fluid.container.FluidInstance;
-import techreborn.api.recipe.recipes.IndustrialGrinderRecipe;
 
 import com.kneelawk.extramodintegrations.util.LongHolder;
+import techreborn.recipe.recipes.IndustrialGrinderRecipe;
 
 public class IndustrialGrinderEmiRecipe extends TREmiRecipe<IndustrialGrinderRecipe> {
     private final List<EmiIngredient> inputsWithFluids;
     private final LongHolder capacityHolder;
 
-    public IndustrialGrinderEmiRecipe(IndustrialGrinderRecipe recipe, LongHolder capacityHolder) {
-        super(recipe);
+    public IndustrialGrinderEmiRecipe(RecipeHolder<IndustrialGrinderRecipe> holder, LongHolder capacityHolder) {
+        super(holder);
         this.capacityHolder = capacityHolder;
-        FluidInstance instance = recipe.getFluidInstance();
-        long amount = instance.getAmount().getRawValue();
+        FluidInstance instance = recipe.fluid();
+        long amount = instance.getAmount().rawValue();
         inputsWithFluids =
-            Stream.concat(inputs.stream(), Stream.of(EmiStack.of(instance.getFluid(), instance.getTag(), amount))).toList();
+            Stream.concat(inputs.stream(), Stream.of(FabricEmiStack.of(instance.fluidVariant(), amount))).toList();
 
         if (amount > capacityHolder.getValue()) {
             capacityHolder.setValue(amount);
@@ -52,7 +53,7 @@ public class IndustrialGrinderEmiRecipe extends TREmiRecipe<IndustrialGrinderRec
     @Override
     public void addWidgets(WidgetHolder widgets) {
         widgets.addSlot(getInput(0), 16 + 22 + 2, 18 * 3 / 2);
-        widgets.add(new TRFluidSlotWidget(recipe.getFluidInstance(), 16, (18 * 4 - 56) / 2, capacityHolder.getValue()));
+        widgets.add(new TRFluidSlotWidget(recipe.fluid(), 16, (18 * 4 - 56) / 2, capacityHolder.getValue()));
 
         for (int i = 0; i < 4; i++) {
             widgets.addSlot(getOutput(i), 16 + 22 + 2 + 18 + 24, i * 18).recipeContext(this);

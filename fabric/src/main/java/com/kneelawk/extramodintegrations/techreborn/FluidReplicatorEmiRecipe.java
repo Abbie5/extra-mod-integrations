@@ -2,11 +2,13 @@ package com.kneelawk.extramodintegrations.techreborn;
 
 import com.kneelawk.extramodintegrations.util.LongHolder;
 import com.kneelawk.extramodintegrations.util.UIUtils;
+import dev.emi.emi.api.FabricEmiStack;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import reborncore.common.fluid.container.FluidInstance;
-import techreborn.api.recipe.recipes.FluidReplicatorRecipe;
+import techreborn.recipe.recipes.FluidReplicatorRecipe;
 
 import java.util.List;
 
@@ -14,12 +16,12 @@ public class FluidReplicatorEmiRecipe extends TREmiRecipe<FluidReplicatorRecipe>
     private final List<EmiStack> fluidOutput;
     private final LongHolder capacityHolder;
 
-    public FluidReplicatorEmiRecipe(FluidReplicatorRecipe recipe, LongHolder capacityHolder) {
-        super(recipe);
+    public FluidReplicatorEmiRecipe(RecipeHolder<FluidReplicatorRecipe> holder, LongHolder capacityHolder) {
+        super(holder);
         this.capacityHolder = capacityHolder;
-        FluidInstance instance = recipe.getFluidInstance();
+        FluidInstance instance = recipe.fluid();
         long amount = instance.getAmount().getRawValue();
-        fluidOutput = List.of(EmiStack.of(instance.getFluid(), instance.getTag(), amount));
+        fluidOutput = List.of(FabricEmiStack.of(instance.fluidVariant(), amount));
 
         if (amount > capacityHolder.getValue()) {
             capacityHolder.setValue(amount);
@@ -50,11 +52,11 @@ public class FluidReplicatorEmiRecipe extends TREmiRecipe<FluidReplicatorRecipe>
     public void addWidgets(WidgetHolder widgets) {
         widgets.addSlot(getInput(0), 16, (56 - 18) / 2);
 
-        widgets.add(new TRFluidSlotWidget(recipe.getFluidInstance(), 16 + 18 + 24, 0, capacityHolder.getValue()))
+        widgets.add(new TRFluidSlotWidget(recipe.fluid(), 16 + 18 + 24, 0, capacityHolder.getValue()))
             .recipeContext(this);
 
         TRUIUtils.energyBar(widgets, recipe, 400, 0, 3);
         TRUIUtils.arrowRight(widgets, recipe, 16 + 18 + 4, (56 - 10) / 2);
-        UIUtils.cookTime(widgets, recipe.getTime(), 16, 0);
+        UIUtils.cookTime(widgets, recipe.time(), 16, 0);
     }
 }

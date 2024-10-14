@@ -3,11 +3,12 @@ package com.kneelawk.extramodintegrations.techreborn;
 import com.kneelawk.extramodintegrations.util.UIUtils;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.widget.WidgetHolder;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import reborncore.common.crafting.RebornRecipe;
 
 public class ImplosionCompressorEmiRecipe extends TREmiRecipe<RebornRecipe> {
-    public ImplosionCompressorEmiRecipe(RebornRecipe recipe) {
-        super(recipe);
+    public ImplosionCompressorEmiRecipe(RecipeHolder<RebornRecipe> holder) {
+        super(holder);
     }
 
     @Override
@@ -35,6 +36,6 @@ public class ImplosionCompressorEmiRecipe extends TREmiRecipe<RebornRecipe> {
 
         TRUIUtils.energyBar(widgets, recipe, 64, 0, 0);
         TRUIUtils.arrowRight(widgets, recipe, 16 + 18 + 4, (50 - 10) / 2);
-        UIUtils.cookTime(widgets, recipe.getTime(), 16 + 18 + 2, 0);
+        UIUtils.cookTime(widgets, recipe.time(), 16 + 18 + 2, 0);
     }
 }

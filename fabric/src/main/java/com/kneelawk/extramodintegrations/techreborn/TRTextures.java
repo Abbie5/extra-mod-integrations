@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class TRTextures {
     public static final ResourceLocation REBORNCORE_GUI_ELEMENTS =
-        new ResourceLocation("reborncore", "textures/gui/guielements.png");
+        ResourceLocation.fromNamespaceAndPath("reborncore", "textures/gui/guielements.png");
 
     public static final EmiTexture ENERGY_BAR_EMPTY = new EmiTexture(REBORNCORE_GUI_ELEMENTS, 126, 150, 14, 50);
     public static final EmiTexture ENERGY_BAR_FULL = new EmiTexture(REBORNCORE_GUI_ELEMENTS, 140, 150, 14, 50);

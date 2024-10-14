@@ -2,12 +2,13 @@ package com.kneelawk.extramodintegrations.techreborn;
 
 import com.kneelawk.extramodintegrations.util.LongHolder;
 import com.kneelawk.extramodintegrations.util.UIUtils;
+import dev.emi.emi.api.FabricEmiStack;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import reborncore.common.fluid.container.FluidInstance;
-import techreborn.api.recipe.recipes.IndustrialSawmillRecipe;
+import techreborn.recipe.recipes.IndustrialSawmillRecipe;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -16,12 +17,12 @@ public class IndustrialSawmillEmiRecipe extends TREmiRecipe<IndustrialSawmillRec
     private final List<EmiIngredient> inputsWithFluids;
     private final LongHolder capacityHolder;
 
-    public IndustrialSawmillEmiRecipe(IndustrialSawmillRecipe recipe, LongHolder capacityHolder) {
-        super(recipe);
+    public IndustrialSawmillEmiRecipe(RecipeHolder<IndustrialSawmillRecipe> holder, LongHolder capacityHolder) {
+        super(holder);
         this.capacityHolder = capacityHolder;
-        FluidInstance instance = recipe.getFluidInstance();
+        FluidInstance instance = recipe.fluid();
         long amount = instance.getAmount().getRawValue();
-        inputsWithFluids = Stream.concat(inputs.stream(), Stream.of(EmiStack.of(instance.getFluid(), instance.getTag(), amount))).toList();
+        inputsWithFluids = Stream.concat(inputs.stream(), Stream.of(FabricEmiStack.of(instance.fluidVariant(), amount))).toList();
 
         if (amount > capacityHolder.getValue()) {
             capacityHolder.setValue(amount);
@@ -52,7 +53,7 @@ public class IndustrialSawmillEmiRecipe extends TREmiRecipe<IndustrialSawmillRec
     public void addWidgets(WidgetHolder widgets) {
         widgets.addSlot(getInput(0), 16 + 22 + 2, (56 - 18) / 2);
 
-        widgets.add(new TRFluidSlotWidget(recipe.getFluidInstance(), 16, 0, capacityHolder.getValue()));
+        widgets.add(new TRFluidSlotWidget(recipe.fluid(), 16, 0, capacityHolder.getValue()));
 
         widgets.addSlot(getOutput(0), 16 + 22 + 2 + 18 + 24, (56 - 18 * 3) / 2).recipeContext(this);
         widgets.addSlot(getOutput(1), 16 + 22 + 2 + 18 + 24, (56 - 18 * 3) / 2 + 18).recipeContext(this);
@@ -60,6 +61,6 @@ public class IndustrialSawmillEmiRecipe extends TREmiRecipe<IndustrialSawmillRec
 
         TRUIUtils.energyBar(widgets, recipe, 10, 0, 3);
         TRUIUtils.arrowRight(widgets, recipe, 16 + 22 + 2 + 18 + 4, (56 - 10) / 2);
-        UIUtils.cookTime(widgets, recipe.getTime(), 16 + 22 + 2, 0);
+        UIUtils.cookTime(widgets, recipe.time(), 16 + 22 + 2, 0);
     }
 }

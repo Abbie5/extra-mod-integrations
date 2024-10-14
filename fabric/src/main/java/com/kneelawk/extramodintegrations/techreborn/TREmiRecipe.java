@@ -5,6 +5,7 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 import reborncore.common.crafting.RebornRecipe;
 
@@ -16,12 +17,12 @@ public abstract class TREmiRecipe<R extends RebornRecipe> implements EmiRecipe {
     protected final List<EmiIngredient> inputs;
     protected final List<EmiStack> outputs;
 
-    public TREmiRecipe(R recipe) {
-        this.recipe = recipe;
-        id = recipe.getId();
-        inputs = recipe.getRebornIngredients().stream().map(ing -> EmiIngredient.of(ing.getPreview(), ing.getCount()))
+    public TREmiRecipe(RecipeHolder<? extends R> holder) {
+        this.recipe = holder.value();
+        id = holder.id();
+        inputs = recipe.ingredients().stream().map(ing -> EmiIngredient.of(ing.ingredient(), ing.count()))
             .toList();
-        outputs = recipe.getOutputs(null).stream().map(EmiStack::of).toList();
+        outputs = recipe.outputs().stream().map(EmiStack::of).toList();
     }
 
     @Override

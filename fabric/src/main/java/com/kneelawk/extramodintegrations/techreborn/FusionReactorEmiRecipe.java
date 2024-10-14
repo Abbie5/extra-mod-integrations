@@ -4,7 +4,8 @@ import com.kneelawk.extramodintegrations.util.UIUtils;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import techreborn.api.recipe.recipes.FusionReactorRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import techreborn.recipe.recipes.FusionReactorRecipe;
 
 import java.util.List;
 
@@ -12,8 +13,8 @@ import static com.kneelawk.extramodintegrations.ExMIMod.gui;
 import static com.kneelawk.extramodintegrations.ExMIMod.tooltip;
 
 public class FusionReactorEmiRecipe extends TREmiRecipe<FusionReactorRecipe> {
-    public FusionReactorEmiRecipe(FusionReactorRecipe recipe) {
-        super(recipe);
+    public FusionReactorEmiRecipe(RecipeHolder<FusionReactorRecipe> holder) {
+        super(holder);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class FusionReactorEmiRecipe extends TREmiRecipe<FusionReactorRecipe> {
         widgets.addSlot(getOutput(0), 16 + 18 + 24, (50 - 26) / 2).large(true).recipeContext(this);
         widgets.addSlot(getInput(1), 16 + 18 + 24 + 26 + 24, (50 - 18) / 2);
 
-        int power = recipe.getPower();
+        int power = recipe.power();
         int displayedPower;
         String tooltip;
         if (power < 0) {
@@ -55,7 +56,7 @@ public class FusionReactorEmiRecipe extends TREmiRecipe<FusionReactorRecipe> {
 
         TRUIUtils.arrowRight(widgets, recipe, 16 + 18 + 4, (50 - 10) / 2);
         TRUIUtils.arrowLeft(widgets, recipe, 16 + 18 + 24 + 26 + 4, (50 - 10) / 2);
-        UIUtils.cookTime(widgets, recipe.getTime(), 16, 0);
+        UIUtils.cookTime(widgets, recipe.time(), 16, 0);
         widgets.addText(gui("techreborn.start_e", UIUtils.metricNumber(recipe.getStartEnergy())).getVisualOrderText(), 16,
             50 - 9, 0xFF3F3F3F, false);
         widgets.addText(gui("techreborn.min_size", recipe.getMinSize()).getVisualOrderText(), 16 + 18 + 24 + 13, 0,

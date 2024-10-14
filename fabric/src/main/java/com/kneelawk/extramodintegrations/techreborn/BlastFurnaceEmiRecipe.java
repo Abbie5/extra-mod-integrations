@@ -5,12 +5,13 @@ import com.kneelawk.extramodintegrations.util.NinePatchWidget;
 import com.kneelawk.extramodintegrations.util.UIUtils;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.widget.WidgetHolder;
-import techreborn.api.recipe.recipes.BlastFurnaceRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import techreborn.recipe.recipes.BlastFurnaceRecipe;
 
 import static com.kneelawk.extramodintegrations.ExMIMod.gui;
 
 public class BlastFurnaceEmiRecipe extends TREmiRecipe<BlastFurnaceRecipe> {
-    public BlastFurnaceEmiRecipe(BlastFurnaceRecipe recipe) {
+    public BlastFurnaceEmiRecipe(RecipeHolder<BlastFurnaceRecipe> recipe) {
         super(recipe);
     }
 
@@ -40,7 +41,7 @@ public class BlastFurnaceEmiRecipe extends TREmiRecipe<BlastFurnaceRecipe> {
 
         TRUIUtils.energyBar(widgets, recipe, 40, 0, 0);
         TRUIUtils.arrowRight(widgets, recipe, 16 + 18 + 4, (50 - 10) / 2);
-        UIUtils.cookTime(widgets, recipe.getTime(), 16 + 18 + 2, 0);
+        UIUtils.cookTime(widgets, recipe.time(), 16 + 18 + 2, 0);
         widgets.addText(gui("techreborn.heat", recipe.getHeat()).getVisualOrderText(), 16 + 18 + 2, 50 - 9, 0xFF3F3F3F,
             false);
     }

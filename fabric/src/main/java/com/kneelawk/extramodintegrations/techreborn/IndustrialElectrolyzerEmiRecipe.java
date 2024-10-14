@@ -5,11 +5,12 @@ import com.kneelawk.extramodintegrations.util.NinePatchWidget;
 import com.kneelawk.extramodintegrations.util.UIUtils;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.widget.WidgetHolder;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import reborncore.common.crafting.RebornRecipe;
 
 public class IndustrialElectrolyzerEmiRecipe extends TREmiRecipe<RebornRecipe> {
-    public IndustrialElectrolyzerEmiRecipe(RebornRecipe recipe) {
-        super(recipe);
+    public IndustrialElectrolyzerEmiRecipe(RecipeHolder<RebornRecipe> holder) {
+        super(holder);
     }
 
     @Override
@@ -42,6 +43,6 @@ public class IndustrialElectrolyzerEmiRecipe extends TREmiRecipe<RebornRecipe> {
 
         TRUIUtils.energyBar(widgets, recipe, 10, 0, 0);
         TRUIUtils.arrowUp(widgets, recipe, 16 + 18 * 2 + 2 + 4, 1 + 26 + 4 + 1);
-        UIUtils.cookTime(widgets, recipe.getTime(), 16 + 18 * 3 + 2, 50 - 9);
+        UIUtils.cookTime(widgets, recipe.time(), 16 + 18 * 3 + 2, 50 - 9);
     }
 }

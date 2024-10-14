@@ -7,10 +7,11 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
-import techreborn.api.recipe.recipes.RollingMachineRecipe;
+import techreborn.recipe.recipes.RollingMachineRecipe;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ public class RollingMachineEmiRecipe implements EmiRecipe {
     private final List<EmiIngredient> input;
     private final EmiStack output;
 
-    public RollingMachineEmiRecipe(RollingMachineRecipe recipe) {
-        this.recipe = recipe;
-        id = recipe.getId();
+    public RollingMachineEmiRecipe(RecipeHolder<RollingMachineRecipe> holder) {
+        this.recipe = holder.value();
+        id = holder.id();
         input = padIngredients(recipe.getShapedRecipe());
         output = EmiStack.of(recipe.getResultItem(null));
     }
@@ -71,7 +72,7 @@ public class RollingMachineEmiRecipe implements EmiRecipe {
 
         TRUIUtils.energyBar(widgets, recipe, 10, 0, 2);
         TRUIUtils.arrowRight(widgets, recipe, 16 + 18 * 3 + 4, (18 * 3 - 10) / 2);
-        UIUtils.cookTime(widgets, recipe.getTime(), 16 + 18 * 3 + 2, 0);
+        UIUtils.cookTime(widgets, recipe.time(), 16 + 18 * 3 + 2, 0);
     }
 
     private static List<EmiIngredient> padIngredients(ShapedRecipe recipe) {
