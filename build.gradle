@@ -1,394 +1,207 @@
-import com.matthewprenger.cursegradle.CurseUploadTask
-
 plugins {
-    id 'fabric-loom'
-    id 'maven-publish'
-    id 'com.modrinth.minotaur'
-    id 'com.matthewprenger.cursegradle'
+    id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
+    id 'architectury-plugin' version '3.4-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-String modVersion
-if (System.getenv("RELEASE_TAG") != null) {
-    String releaseTag = System.getenv("RELEASE_TAG")
-    modVersion = releaseTag.substring(1)
-    println("Detected Release Version: $modVersion")
-} else {
-    modVersion = project.mod_version
-    println("Detected Local Version: $modVersion")
+architectury {
+    minecraft = project.minecraft_version
 }
 
-loom {
-    runs {
-        client {
-            programArgs("--width", "1280", "--height", "720")
-        }
-    }
+allprojects {
+    group = rootProject.maven_group
+    version = rootProject.mod_version
 }
 
-archivesBaseName = project.archives_base_name
-version = modVersion
-group = project.maven_group
+subprojects {
+    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'architectury-plugin'
+    apply plugin: 'maven-publish'
 
-repositories {
-    maven {
-        // EMI & Mod Menu
-        name "TerraformersMC"
-        url "https://maven.terraformersmc.com/releases/"
-    }
-    maven {
-        // TechReborn
-        name "CurseMaven"
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    maven {
-        // Industrial Revolution
-        name "Modrinth"
-        url "https://api.modrinth.com/maven"
-        content {
-            includeGroup "maven.modrinth"
-        }
-    }
-
-    maven {
-        name "CottonMC"
-        url "https://server.bbkr.space/artifactory/libs-release"
-    }
-
-    maven {
-        url = "https://jitpack.io"
-        content {
-            includeGroup "com.github.Technici4n"
-            includeGroup "com.github.Draylar"
-            includeGroup "com.github.GabrielOlvH"
-            includeGroup "com.github.Draylar.omega-config"
-            includeGroup "com.github.emilyploszaj"
-            includeGroup "com.github.llamalad7.mixinextras"
-            includeGroup "com.github.Chocohead"
-            includeGroup "com.github.bawnorton.mixinsquared"
-            includeGroup "com.github.DimensionalDevelopment"
-        }
-    }
-
-    maven {
-        name = "Cafeteria Development"
-        url = 'https://maven.cafeteria.dev/releases'
-        content {
-            includeGroup 'dev.cafeteria'
-            includeGroup 'me.luligabi'
-            includeGroup 'net.adriantodt.fabricmc'
-        }
-    }
-
-    maven {
-        name = "Draylar"
-        url = "https://maven.draylar.dev/releases"
-        content {
-            includeGroup "dev.draylar"
-        }
-    }
-
-    maven {
-        name = "Wisp Forest"
-        url = "https://maven.wispforest.io/"
-        content {
-            includeGroup "io.wispforest"
-            includeGroup "io.wispforest.lavender-md"
-            includeGroup "me.alphamode"
-        }
-    }
-
-    maven {
-        // AE2
-        name "Modmaven"
-        url "https://modmaven.dev/"
-        content {
-            includeGroup 'appeng'
-        }
-    }
-
-    maven {
-        // Hephaestus
-        name "devOS"
-        url "https://mvn.devos.one/snapshots"
-        content {
-            includeGroup "slimeknights.tconstruct"
-            includeGroup "slimeknights.mantle"
-            includeGroup "io.github.tropheusj"
-            includeGroup "io.github.fabricators_of_create.Porting-Lib"
-        }
-    }
-
-    maven {
-        // Cardinal Components API, required by Hephaestus
-        name "Ladysnake"
-        url "https://maven.ladysnake.org/releases"
-        content {
-            includeGroup "dev.onyxstudios.cardinal-components-api"
-        }
-    }
-
-    maven {
-        // Architectury API, required by Hephaestus
-        name "Architectury"
-        url "https://maven.architectury.dev"
-        content {
-            includeGroup "dev.architectury"
-        }
-    }
-
-    maven {
-        // Reach Entity Attributes, required by Hephaestus
-        name "JamiesWhiteShirt"
-        url "https://maven.jamieswhiteshirt.com/libs-release"
-        content {
-            includeGroup "com.jamieswhiteshirt"
-        }
-    }
-
-    maven {
-        // Cloth Config, required by Dimensional Doors
-        name "Shedaniel"
-        url "https://maven.shedaniel.me"
-        content {
-            includeGroup "me.shedaniel.cloth"
-        }
-    }
-
-    maven {
-        // ParchmentMC mappings
-        name "Parchment"
-        url "https://maven.parchmentmc.org"
-        content {
-            includeGroup "org.parchmentmc.data"
-        }
-    }
-}
-
-dependencies {
-    dependencies.ext.mod = { String dep ->
-        modImplementation(dep) {
-            exclude group: "net.fabricmc"
-            exclude group: "net.fabricmc.fabric-api"
-            exclude group: "io.github.prospector"
-            exclude group: "me.shedaniel"
-            exclude group: "mezz.jei"
-        }
-    }
-
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_version}@zip")
-    }
-
-    // Don't commute Fabric or FAPI to anything that depends on us
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // EMI
-    modApi("dev.emi:emi-fabric:${project.emi_version}:api") {
-        transitive = false
-    }
-
-    //
-    // Mods we add EMI integration with and their dependencies
-    //
-
-    // Tech Reborn
-    if (tech_reborn_enabled.toBoolean()) {
-        dependencies.ext.mod "curse.maven:techreborn-233564:${project.tech_reborn_id}"
-        dependencies.ext.mod "curse.maven:reborncore-237903:${project.reborn_core_id}"
-        dependencies.ext.mod "teamreborn:energy:${project.energy_version}"
-    }
-
-    // Industrial Revolution
-    if (indrev_enabled.toBoolean()) {
-        dependencies.ext.mod "maven.modrinth:industrial-revolution:${project.indrev_version}"
-        dependencies.ext.mod "net.fabricmc:fabric-language-kotlin:${project.kotlin_version}"
-        dependencies.ext.mod "io.github.cottonmc:LibGui:${project.libgui_version}"
-        dependencies.ext.mod "dev.cafeteria:fake-player-api:${project.fake_player_version}"
-        dependencies.ext.mod "dev.draylar:magna:${project.magna_version}"
-    }
-
-    // Farmer's Delight
-    if (farmers_delight_enabled.toBoolean()) {
-        dependencies.ext.mod "maven.modrinth:farmers-delight-fabric:${project.farmers_delight_version}"
-    }
-
-    // Conjuring
-    if (conjuring_enabled.toBoolean()) {
-        dependencies.ext.mod "maven.modrinth:conjuring:${project.conjuring_version}"
-        dependencies.ext.mod "io.wispforest:owo-lib:${project.owo_version}"
-        dependencies.ext.mod "io.wispforest:lavender:${project.lavender_version}"
-    }
-
-    // AE2
-    if (ae2_enabled.toBoolean()) {
-        dependencies.ext.mod "appeng:appliedenergistics2-fabric:${project.ae2_version}"
-    }
-
-    // Hephaestus
-    if (tic_enabled.toBoolean()) {
-        dependencies.ext.mod "slimeknights.tconstruct:Hephaestus:${project.tic_version}"
-        dependencies.ext.mod "slimeknights.mantle:Mantle:${project.mantle_version}"
-        project.port_lib_modules.split(",").each {
-            dependencies.ext.mod "io.github.fabricators_of_create.Porting-Lib:${it}:${project.porting_lib_version}"
-        }
-    }
-
-    // Dimensional Doors
-    if (dimdoors_enabled.toBoolean()) {
-        dependencies.ext.mod "maven.modrinth:dimensionaldoors:${project.dimdoors_version}"
-        dependencies.ext.mod "dev.architectury:architectury-fabric:${project.arch_version}"
-        dependencies.ext.mod "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}"
-        dependencies.ext.mod "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-        dependencies.ext.mod "dev.onyxstudios.cardinal-components-api:cardinal-components-item:${project.cca_version}"
-        dependencies.ext.mod "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}"
-        dependencies.ext.mod "dev.onyxstudios.cardinal-components-api:cardinal-components-chunk:${project.cca_version}"
-        dependencies.ext.mod "com.flowpowered:flow-math:1.0.3"
-        dependencies.ext.mod "org.jgrapht:jgrapht-core:1.1.0"
-        dependencies.ext.mod "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
-        dependencies.ext.mod "com.github.Chocohead:Fabric-ASM:v2.3"
-    }
-
-    //
-    // Stuff we just want to have at runtime
-    //
-
-    // EMI (we do want this to be commuted to anything that depends on us)
-    modRuntimeOnly("dev.emi:emi-fabric:${project.emi_version}") {
-        transitive = false
-    }
-
-    // Mod Menu
-    modLocalRuntime("com.terraformersmc:modmenu:${project.mod_menu_version}") {
-        exclude group: "net.fabricmc"
-        exclude group: "net.fabricmc.fabric-api"
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            if (!tech_reborn_enabled.toBoolean()) {
-                exclude('com/kneelawk/extramodintegrations/techreborn')
-            }
-            if (!indrev_enabled.toBoolean()) {
-                exclude('com/kneelawk/extramodintegrations/indrev')
-            }
-            if (!farmers_delight_enabled.toBoolean()) {
-                exclude('com/kneelawk/extramodintegrations/farmersdelight')
-            }
-            if (!conjuring_enabled.toBoolean()) {
-                exclude('com/kneelawk/extramodintegrations/conjuring')
-            }
-            if (!ae2_enabled.toBoolean()) {
-                exclude('com/kneelawk/extramodintegrations/appeng')
-            }
-            if (!tic_enabled.toBoolean()) {
-                exclude('com/kneelawk/extramodintegrations/tconstruct')
-            }
-            if (!dimdoors_enabled.toBoolean()) {
-                exclude('com/kneelawk/extramodintegrations/dimdoors')
-            }
-        }
-    }
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    // Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-    it.options.release = 17
-}
-
-java {
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
-}
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
-    }
-}
-
-modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
-    projectId = project.mrProjectId
-    versionNumber = modVersion
-    versionType = project.mrVeresionType
-    def file = rootProject.file("changelogs/changelog-v${modVersion}.md")
-    if (file.exists()) {
-        changelog = file.text
-    }
-    uploadFile = tasks.remapJar
-    additionalFiles = [tasks.sourcesJar]
-    gameVersions = project.mrGameVersions.split("\\s*,\\s*").toList()
-    loaders = project.mrLoaders.split("\\s*,\\s*").toList()
-    dependencies {
-        for (final def projectId in project.mrDependencies.split("\\s*,\\s*")) {
-            required.project projectId
-        }
-    }
-    syncBodyFrom = rootProject.file("README.md").text
-}
-
-String curseApiKey = System.getenv("CURSE_API_KEY")
-if (curseApiKey != null) {
-    curseforge {
-        apiKey = curseApiKey
-        project {
-            id = project.cfProjectId
-            changelogType = 'markdown'
-            changelog = rootProject.file("changelogs/changelog-v${modVersion}.md")
-            releaseType = project.cfReleaseType
-            project.cfMinecraftVersions.split("\\s*,\\s*").each { addGameVersion(it) }
-            mainArtifact(tasks.remapJar)
-            relations {
-                project.cfDependencies.split("\\s*,\\s*").each { requiredDependency(it) }
-            }
-        }
-        options {
-            forgeGradleIntegration = false
-        }
-    }
-}
-tasks.withType(CurseUploadTask).configureEach {
-    doLast {
-        file("curse-file-id.txt").text = mainArtifact.fileID
-    }
-}
-
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
+    base {
+        // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
+        archivesName = "$rootProject.archives_name-$project.name"
     }
 
     repositories {
-        if (System.getenv("PUBLISH_REPO") != null) {
-            maven {
-                name = "publishRepo"
-                url = uri(System.getenv("PUBLISH_REPO"))
+        maven {
+            // EMI & Mod Menu
+            name "TerraformersMC"
+            url "https://maven.terraformersmc.com/releases/"
+        }
+        maven {
+            // TechReborn
+            name "CurseMaven"
+            url "https://cursemaven.com"
+            content {
+                includeGroup "curse.maven"
             }
+        }
+        maven {
+            // Industrial Revolution
+            name "Modrinth"
+            url "https://api.modrinth.com/maven"
+            content {
+                includeGroup "maven.modrinth"
+            }
+        }
+
+        maven {
+            name "CottonMC"
+            url "https://server.bbkr.space/artifactory/libs-release"
+        }
+
+        maven {
+            url = "https://jitpack.io"
+            content {
+                includeGroup "com.github.Technici4n"
+                includeGroup "com.github.Draylar"
+                includeGroup "com.github.GabrielOlvH"
+                includeGroup "com.github.Draylar.omega-config"
+                includeGroup "com.github.emilyploszaj"
+                includeGroup "com.github.llamalad7.mixinextras"
+                includeGroup "com.github.Chocohead"
+                includeGroup "com.github.bawnorton.mixinsquared"
+                includeGroup "com.github.DimensionalDevelopment"
+            }
+        }
+
+        maven {
+            name = "Cafeteria Development"
+            url = 'https://maven.cafeteria.dev/releases'
+            content {
+                includeGroup 'dev.cafeteria'
+                includeGroup 'me.luligabi'
+                includeGroup 'net.adriantodt.fabricmc'
+            }
+        }
+
+        maven {
+            name = "Draylar"
+            url = "https://maven.draylar.dev/releases"
+            content {
+                includeGroup "dev.draylar"
+            }
+        }
+
+        maven {
+            name = "Wisp Forest"
+            url = "https://maven.wispforest.io/"
+            content {
+                includeGroup "io.wispforest"
+                includeGroup "io.wispforest.lavender-md"
+                includeGroup "me.alphamode"
+            }
+        }
+
+        maven {
+            // AE2
+            name "Modmaven"
+            url "https://modmaven.dev/"
+            content {
+                includeGroup 'appeng'
+            }
+        }
+
+        maven {
+            // Hephaestus
+            name "devOS"
+            url "https://mvn.devos.one/snapshots"
+            content {
+                includeGroup "slimeknights.tconstruct"
+                includeGroup "slimeknights.mantle"
+                includeGroup "io.github.tropheusj"
+                includeGroup "io.github.fabricators_of_create.Porting-Lib"
+            }
+        }
+
+        maven {
+            // Cardinal Components API, required by Hephaestus
+            name "Ladysnake"
+            url "https://maven.ladysnake.org/releases"
+            content {
+                includeGroup "dev.onyxstudios.cardinal-components-api"
+            }
+        }
+
+        maven {
+            // Architectury API, required by Hephaestus
+            name "Architectury"
+            url "https://maven.architectury.dev"
+            content {
+                includeGroup "dev.architectury"
+            }
+        }
+
+        maven {
+            // Reach Entity Attributes, required by Hephaestus
+            name "JamiesWhiteShirt"
+            url "https://maven.jamieswhiteshirt.com/libs-release"
+            content {
+                includeGroup "com.jamieswhiteshirt"
+            }
+        }
+
+        maven {
+            // Cloth Config, required by Dimensional Doors
+            name "Shedaniel"
+            url "https://maven.shedaniel.me"
+            content {
+                includeGroup "me.shedaniel.cloth"
+            }
+        }
+
+        maven {
+            // ParchmentMC mappings
+            name "Parchment"
+            url "https://maven.parchmentmc.org"
+            content {
+                includeGroup "org.parchmentmc.data"
+            }
+        }
+    }
+
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    dependencies {
+        minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+        mappings loom.layered {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-$rootProject.parchment_minecraft_version:$rootProject.parchment_version")
+        }
+    }
+
+    java {
+        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+        // if it is present.
+        // If you remove this line, sources will not be generated.
+        withSourcesJar()
+
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.release = 17
+    }
+
+    // Configure Maven publishing.
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = base.archivesName.get()
+                from components.java
+            }
+        }
+
+        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+        repositories {
+            // Add repositories to publish to here.
+            // Notice: This block does NOT have the same function as the block in the top level.
+            // The repositories here will be used for publishing your artifact, not for
+            // retrieving dependencies.
         }
     }
 }

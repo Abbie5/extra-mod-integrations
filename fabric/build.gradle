@@ -1,0 +1,155 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+
+    // Files in this configuration will be bundled into your mod using the Shadow plugin.
+    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+dependencies {
+    dependencies.ext.mod = { String dep ->
+        modImplementation(dep) {
+            exclude group: "net.fabricmc"
+            exclude group: "net.fabricmc.fabric-api"
+            exclude group: "io.github.prospector"
+            exclude group: "me.shedaniel"
+            exclude group: "mezz.jei"
+        }
+    }
+
+    modImplementation "net.fabricmc:fabric-loader:$project.fabric_loader_version"
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$project.fabric_api_version"
+
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+
+    modCompileOnly "dev.emi:emi-fabric:$project.emi_version:api"
+    modLocalRuntime "dev.emi:emi-fabric:$project.emi_version"
+
+    //
+    // Mods we add EMI integration with and their dependencies
+    //
+
+    // Tech Reborn
+    if (tech_reborn_enabled.toBoolean()) {
+        dependencies.ext.mod "curse.maven:techreborn-233564:$project.tech_reborn_id"
+        dependencies.ext.mod "curse.maven:reborncore-237903:$project.reborn_core_id"
+        dependencies.ext.mod "teamreborn:energy:$project.energy_version"
+    }
+
+    // Industrial Revolution
+    if (indrev_enabled.toBoolean()) {
+        dependencies.ext.mod "maven.modrinth:industrial-revolution:$project.indrev_version"
+        dependencies.ext.mod "net.fabricmc:fabric-language-kotlin:$project.kotlin_version"
+        dependencies.ext.mod "io.github.cottonmc:LibGui:$project.libgui_version"
+        dependencies.ext.mod "dev.cafeteria:fake-player-api:$project.fake_player_version"
+//        dependencies.ext.mod "dev.draylar:magna:$project.magna_version"
+    }
+
+    // Farmer's Delight
+    if (farmers_delight_enabled.toBoolean()) {
+        dependencies.ext.mod "maven.modrinth:farmers-delight-fabric:$project.farmers_delight_version"
+    }
+
+    // Conjuring
+    if (conjuring_enabled.toBoolean()) {
+        dependencies.ext.mod "maven.modrinth:conjuring:$project.conjuring_version"
+        dependencies.ext.mod "io.wispforest:owo-lib:$project.owo_version"
+        dependencies.ext.mod "io.wispforest:lavender:$project.lavender_version"
+    }
+
+    // AE2
+    if (ae2_enabled.toBoolean()) {
+        dependencies.ext.mod "appeng:appliedenergistics2-fabric:$project.ae2_version"
+    }
+
+    // Hephaestus
+    if (tic_enabled.toBoolean()) {
+        dependencies.ext.mod "slimeknights.tconstruct:Hephaestus:$project.tic_version"
+        dependencies.ext.mod "slimeknights.mantle:Mantle:$project.mantle_version"
+        project.port_lib_modules.split(",").each {
+            dependencies.ext.mod "io.github.fabricators_of_create.Porting-Lib:${it}:$project.porting_lib_version"
+        }
+    }
+
+    // Dimensional Doors
+    if (dimdoors_enabled.toBoolean()) {
+        dependencies.ext.mod "maven.modrinth:dimensionaldoors:$project.dimdoors_version"
+        dependencies.ext.mod "dev.architectury:architectury-fabric:$project.arch_version"
+        dependencies.ext.mod "me.shedaniel.cloth:cloth-config-fabric:$project.cloth_version"
+        dependencies.ext.mod "dev.onyxstudios.cardinal-components-api:cardinal-components-base:$project.cca_version"
+        dependencies.ext.mod "dev.onyxstudios.cardinal-components-api:cardinal-components-item:$project.cca_version"
+        dependencies.ext.mod "dev.onyxstudios.cardinal-components-api:cardinal-components-world:$project.cca_version"
+        dependencies.ext.mod "dev.onyxstudios.cardinal-components-api:cardinal-components-chunk:$project.cca_version"
+        dependencies.ext.mod "com.flowpowered:flow-math:1.0.3"
+        dependencies.ext.mod "org.jgrapht:jgrapht-core:1.1.0"
+        dependencies.ext.mod "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
+        dependencies.ext.mod "com.github.Chocohead:Fabric-ASM:v2.3"
+    }
+
+}
+
+sourceSets {
+    main {
+        java {
+            if (!tech_reborn_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/techreborn')
+            }
+            if (!indrev_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/indrev')
+            }
+            if (!farmers_delight_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/farmersdelight')
+            }
+            if (!conjuring_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/conjuring')
+            }
+            if (!ae2_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/appeng')
+            }
+            if (!tic_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/tconstruct')
+            }
+            if (!dimdoors_enabled.toBoolean()) {
+                exclude('com/kneelawk/extramodintegrations/dimdoors')
+            }
+        }
+    }
+}
+
+processResources {
+    inputs.property 'version', project.version
+
+    filesMatching('fabric.mod.json') {
+        expand version: project.version
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+}
