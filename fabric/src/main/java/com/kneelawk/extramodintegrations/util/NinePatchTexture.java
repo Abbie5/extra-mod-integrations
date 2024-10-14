@@ -70,10 +70,9 @@ public class NinePatchTexture {
         RenderSystem.setShaderTexture(0, textureId);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         Tesselator tess = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tess.getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        BufferBuilder bufferBuilder = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         render(bufferBuilder, stack.last().pose(), 0, x, y, w, h);
-        tess.end();
+        tess.clear();
     }
 
     private void render(VertexConsumer consumer, Matrix4f mat, int z, int x, int y, int w, int h) {
@@ -153,9 +152,9 @@ public class NinePatchTexture {
                              float v0, float u1, float v1) {
         int x1 = x0 + w;
         int y1 = y0 + h;
-        consumer.vertex(mat, x0, y1, z).uv(u0, v1).endVertex();
-        consumer.vertex(mat, x1, y1, z).uv(u1, v1).endVertex();
-        consumer.vertex(mat, x1, y0, z).uv(u1, v0).endVertex();
-        consumer.vertex(mat, x0, y0, z).uv(u0, v0).endVertex();
+        consumer.addVertex(mat, x0, y1, z).setUv(u0, v1);
+        consumer.addVertex(mat, x1, y1, z).setUv(u1, v1);
+        consumer.addVertex(mat, x1, y0, z).setUv(u1, v0);
+        consumer.addVertex(mat, x0, y0, z).setUv(u0, v0);
     }
 }

@@ -11,8 +11,8 @@ import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -51,7 +51,7 @@ public class EntityEmiStack extends EmiStack {
                 MouseHandler mouse = Minecraft.getInstance().mouseHandler;
                 float mouseX = (float) mouse.xpos() + x;
                 float mouseY = (float) mouse.ypos() + y;
-                InventoryScreen.renderEntityInInventoryFollowsMouse(draw, x + 8, y + 16, 8, 0, 0, living);
+                InventoryScreen.renderEntityInInventoryFollowsMouse(draw, x + 8, y + 16, 8, 0, 0, 0, mouseX, mouseY, living);
             }
         }
         if ((flags & RENDER_REMAINDER) != 0) {
@@ -65,7 +65,7 @@ public class EntityEmiStack extends EmiStack {
     }
 
     @Override
-    public CompoundTag getNbt() {
+    public DataComponentPatch getComponentChanges() {
         return null;
     }
 

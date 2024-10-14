@@ -71,7 +71,7 @@ public class UIUtils {
         }
 
         TextureAtlasSprite sprite = sprites[0];
-        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, sprite.atlasLocation());
         Matrix4f model = matrices.last().pose();
@@ -80,8 +80,7 @@ public class UIUtils {
         float g = (float) (color >> 8 & 0xFF) / 256.0F;
         float b = (float) (color & 0xFF) / 256.0F;
         Tesselator tess = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tess.getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
+        BufferBuilder bufferBuilder = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
         int fluidStripCount = (int) (fluidHeight / FLUID_PATCH_HEIGHT);
         for (int i = 0; i < fluidStripCount; i++) {
@@ -94,7 +93,7 @@ public class UIUtils {
             (float) areaY + areaHeight - FLUID_PATCH_HEIGHT * fluidStripCount - stripRemainder, fluidWidth,
             stripRemainder, r, g, b);
 
-        tess.end();
+        tess.clear();
     }
 
     private static void buildFluidHorizontalStrip(BufferBuilder bufferBuilder, Matrix4f model, TextureAtlasSprite sprite, float x0,
@@ -119,9 +118,9 @@ public class UIUtils {
         float spriteHeight = sprite.getV1() - sprite.getV0();
         float uMin = uMax - spriteWidth * width / 16f;
         float vMin = vMax - spriteHeight * height / 16f;
-        bufferBuilder.vertex(model, x0, y1, 1.0F).color(r, g, b, 1.0F).uv(uMin, vMax).endVertex();
-        bufferBuilder.vertex(model, x1, y1, 1.0F).color(r, g, b, 1.0F).uv(uMax, vMax).endVertex();
-        bufferBuilder.vertex(model, x1, y0, 1.0F).color(r, g, b, 1.0F).uv(uMax, vMin).endVertex();
-        bufferBuilder.vertex(model, x0, y0, 1.0F).color(r, g, b, 1.0F).uv(uMin, vMin).endVertex();
+        bufferBuilder.addVertex(model, x0, y1, 1.0F).setColor(r, g, b, 1.0F).setUv(uMin, vMax);
+        bufferBuilder.addVertex(model, x1, y1, 1.0F).setColor(r, g, b, 1.0F).setUv(uMax, vMax);
+        bufferBuilder.addVertex(model, x1, y0, 1.0F).setColor(r, g, b, 1.0F).setUv(uMax, vMin);
+        bufferBuilder.addVertex(model, x0, y0, 1.0F).setColor(r, g, b, 1.0F).setUv(uMin, vMin);
     }
 }
