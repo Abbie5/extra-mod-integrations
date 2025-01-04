@@ -1,84 +1,55 @@
+/*
+ * Copyright (c) 2020 vectorwing, the Farmer's Delight Refabricated authors
+ * License available at https://github.com/MehVahdJukaar/FarmersDelightRefabricated/blob/b6690b2106abc6205021e40f9117c03f36323362/LICENSE
+ */
+
 package com.kneelawk.extramodintegrations.farmersdelight;
 
 import com.kneelawk.extramodintegrations.AbstractFDIntegration;
-import com.kneelawk.extramodintegrations.ExMIMod;
-import com.nhoryzon.mc.farmersdelight.recipe.CookingPotRecipe;
-import com.nhoryzon.mc.farmersdelight.recipe.CuttingBoardRecipe;
-import com.nhoryzon.mc.farmersdelight.registry.BlocksRegistry;
-import com.nhoryzon.mc.farmersdelight.registry.ExtendedScreenTypesRegistry;
-import com.nhoryzon.mc.farmersdelight.registry.RecipeTypesRegistry;
-import com.nhoryzon.mc.farmersdelight.registry.TagsRegistry;
 import dev.emi.emi.api.EmiRegistry;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
-@SuppressWarnings("unused")
+import vectorwing.farmersdelight.FarmersDelight;
+import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
+import vectorwing.farmersdelight.common.crafting.CuttingBoardRecipe;
+import vectorwing.farmersdelight.common.registry.ModMenuTypes;
+import vectorwing.farmersdelight.common.registry.ModRecipeTypes;
+import com.kneelawk.extramodintegrations.farmersdelight.handler.CookingPotEmiRecipeHandler;
+import com.kneelawk.extramodintegrations.farmersdelight.recipe.CookingPotEmiRecipe;
+import com.kneelawk.extramodintegrations.farmersdelight.recipe.CuttingEmiRecipe;
+import com.kneelawk.extramodintegrations.farmersdelight.recipe.DecompositionEmiRecipe;
+
 public class FDIntegration extends AbstractFDIntegration {
-    public static EmiRecipeCategory COOKING_CATEGORY = new EmiRecipeCategory(
-            new Identifier("farmersdelight", "cooking"),
-            EmiStack.of(BlocksRegistry.COOKING_POT.get())
-    ) {
-        @Override
-        public Text getName() {
-            return Text.translatable("farmersdelight.rei.cooking");
-        }
-    };
-    public static EmiRecipeCategory CUTTING_CATEGORY = new EmiRecipeCategory(
-            new Identifier("farmersdelight", "cutting"),
-            EmiStack.of(BlocksRegistry.CUTTING_BOARD.get())
-    ) {
-        @Override
-        public Text getName() {
-            return Text.translatable("farmersdelight.rei.cutting");
-        }
-    };
-    public static EmiRecipeCategory DECOMPOSITION_CATEGORY = new EmiRecipeCategory(
-            new Identifier("farmersdelight", "decomposition"),
-            EmiStack.of(BlocksRegistry.RICH_SOIL.get())
-    ) {
-        @Override
-        public Text getName() {
-            return Text.translatable("farmersdelight.rei.decomposition");
-        }
-    };
 
     @Override
-    protected void registerImpl(EmiRegistry registry) {
-        ExMIMod.logLoading("Farmer's Delight");
+    public void registerImpl(EmiRegistry registry) {
+        registry.addCategory(FDRecipeCategories.COOKING);
+        registry.addCategory(FDRecipeCategories.CUTTING);
+        registry.addCategory(FDRecipeCategories.DECOMPOSITION);
 
-        // categories
-        registry.addCategory(COOKING_CATEGORY);
-        registry.addCategory(CUTTING_CATEGORY);
-        registry.addCategory(DECOMPOSITION_CATEGORY);
+        registry.addWorkstation(FDRecipeCategories.COOKING, FDRecipeWorkstations.COOKING_POT);
+        registry.addWorkstation(FDRecipeCategories.CUTTING, FDRecipeWorkstations.CUTTING_BOARD);
+        registry.addRecipeHandler(ModMenuTypes.COOKING_POT.get(), new CookingPotEmiRecipeHandler());
+        //TODO: add ability to client on recipe arrow. we can also do it directly from recipe screen
 
-        // workstations
-        registry.addWorkstation(COOKING_CATEGORY, EmiStack.of(BlocksRegistry.COOKING_POT.get()));
-        registry.addWorkstation(CUTTING_CATEGORY, EmiStack.of(BlocksRegistry.CUTTING_BOARD.get()));
-        registry.addWorkstation(DECOMPOSITION_CATEGORY, EmiStack.of(BlocksRegistry.RICH_SOIL.get()));
 
-        // recipes
-        RecipeManager manager = registry.getRecipeManager();
-        manager.listAllOfType(RecipeTypesRegistry.COOKING_RECIPE_SERIALIZER.type())
-                .stream()
-                .map(CookingPotRecipe.class::cast)
-                .map(CookingPotEmiRecipe::new)
-                .forEach(registry::addRecipe);
-        manager.listAllOfType(RecipeTypesRegistry.CUTTING_RECIPE_SERIALIZER.type())
-                .stream()
-                .map(CuttingBoardRecipe.class::cast)
-                .map(CuttingEmiRecipe::new)
-                .forEach(registry::addRecipe);
-        registry.addRecipe(new DecompositionEmiRecipe(
-                EmiStack.of(BlocksRegistry.ORGANIC_COMPOST.get()),
-                EmiIngredient.of(TagsRegistry.COMPOST_ACTIVATORS),
-                EmiStack.of(BlocksRegistry.RICH_SOIL.get())
-        ));
+        for (RecipeHolder<CookingPotRecipe> recipe : registry.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COOKING.get())) {
+            registry.addRecipe(new CookingPotEmiRecipe(recipe.id(), recipe.value().getIngredients().stream().map(EmiIngredient::of).toList(),
+                    EmiStack.of(recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess())), EmiStack.of(recipe.value().getOutputContainer()), recipe.value().getCookTime(), recipe.value().getExperience()));
+        }
 
-        // recipe handlers
-        registry.addRecipeHandler(ExtendedScreenTypesRegistry.COOKING_POT.get(), new CookingPotRecipeHandler());
+        for (RecipeHolder<CuttingBoardRecipe> recipe : registry.getRecipeManager().getAllRecipesFor(ModRecipeTypes.CUTTING.get())) {
+            registry.addRecipe(new CuttingEmiRecipe(recipe.id(), EmiIngredient.of(recipe.value().getTool()), EmiIngredient.of(recipe.value().getIngredients().get(0)),
+                    recipe.value().getRollableResults().stream().map(chanceResult -> EmiStack.of(chanceResult.stack()).setChance(chanceResult.chance())).toList()));
+        }
+        registry.addRecipe(new DecompositionEmiRecipe());
+    }
+
+    public static ResourceLocation res(String path) {
+        return ResourceLocation.fromNamespaceAndPath(FarmersDelight.MODID, path);
     }
 }

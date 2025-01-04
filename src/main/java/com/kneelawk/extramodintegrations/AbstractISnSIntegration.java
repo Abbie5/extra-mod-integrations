@@ -2,20 +2,21 @@ package com.kneelawk.extramodintegrations;
 
 import net.neoforged.fml.ModList;
 
-import com.kneelawk.extramodintegrations.util.ReflectionUtils;
-import dev.emi.emi.api.EmiRegistry;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractFDIntegration {
+import com.kneelawk.extramodintegrations.util.ReflectionUtils;
+import dev.emi.emi.api.EmiRegistry;
+
+public abstract class AbstractISnSIntegration {
     @Nullable
-    public static final AbstractFDIntegration INSTANCE;
-    public static final String modName = "Farmer's Delight";
+    public static final AbstractISnSIntegration INSTANCE;
+    private static final String modName = "Iron's Spells 'n' Spellbooks";
 
     static {
-        if (ModList.get().isLoaded("farmersdelight")) {
+        if (ModList.get().isLoaded("irons_spellbooks")) {
             INSTANCE =
                     ReflectionUtils.newIntegrationInstance(
-                            "com.kneelawk.extramodintegrations.farmersdelight.FDIntegration", modName);
+                            "com.kneelawk.extramodintegrations.isns.ISnSIntegration", modName);
         } else {
             INSTANCE = null;
         }

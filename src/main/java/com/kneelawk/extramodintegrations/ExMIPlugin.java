@@ -1,5 +1,8 @@
 package com.kneelawk.extramodintegrations;
 
+import net.minecraft.world.item.Items;
+
+import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiInitRegistry;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -7,10 +10,9 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.recipe.EmiRecipeSorting;
 import dev.emi.emi.api.stack.EmiStack;
 
-import net.minecraft.item.Items;
-
 import static com.kneelawk.extramodintegrations.ExMIMod.id;
 
+@EmiEntrypoint
 public class ExMIPlugin implements EmiPlugin {
     private static final EmiStack BUCKET_STACK = EmiStack.of(Items.BUCKET);
     private static final EmiStack WATER_BUCKET_STACK = EmiStack.of(Items.WATER_BUCKET);
@@ -27,17 +29,19 @@ public class ExMIPlugin implements EmiPlugin {
         registry.addCategory(FLUID_FROM_CONTAINER_CATEGORY);
         registry.addCategory(FLUID_INTO_CONTAINER_CATEGORY);
 
-        AbstractTRIntegration.register(registry);
-        AbstractIRIntegration.register(registry);
+        AbstractChippedIntegration.register(registry);
+        AbstractRechiseledIntegration.register(registry);
+        AbstractReliquaryIntegration.register(registry);
+        AbstractISnSIntegration.register(registry);
+        AbstractApotheosisIntegration.register(registry);
+        AbstractPnCIntegration.register(registry);
+        AbstractArsIntegration.register(registry);
         AbstractFDIntegration.register(registry);
-        AbstractConjuringIntegration.register(registry);
-        AbstractAE2Integration.register(registry);
-        AbstractTiCIntegration.register(registry);
-        AbstractDimDoorsIntegration.register(registry);
+        AbstractAAIntegration.register(registry);
+        AbstractFTBQIntegration.register(registry);
     }
 
     @Override
     public void initialize(EmiInitRegistry registry) {
-        AbstractTiCIntegration.initialize(registry);
     }
 }

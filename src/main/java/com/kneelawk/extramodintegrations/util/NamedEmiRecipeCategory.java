@@ -1,25 +1,26 @@
 package com.kneelawk.extramodintegrations.util;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiRenderable;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class NamedEmiRecipeCategory extends EmiRecipeCategory {
-    private final Text name;
+    private final Component name;
 
-    public NamedEmiRecipeCategory(Identifier id, EmiRenderable icon, Text name) {
+    public NamedEmiRecipeCategory(ResourceLocation id, EmiRenderable icon, Component name) {
         super(id, icon);
         this.name = name;
     }
 
-    public NamedEmiRecipeCategory(Identifier id, EmiRenderable icon, EmiRenderable simplified, Text name) {
+    public NamedEmiRecipeCategory(ResourceLocation id, EmiRenderable icon, EmiRenderable simplified, Component name) {
         super(id, icon, simplified);
         this.name = name;
     }
 
     @Override
-    public Text getName() {
+    public Component getName() {
         return name;
     }
 }

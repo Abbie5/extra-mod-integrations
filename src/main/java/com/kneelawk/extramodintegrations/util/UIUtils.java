@@ -4,25 +4,17 @@ import java.util.List;
 
 import dev.emi.emi.api.widget.WidgetHolder;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 
 import static com.kneelawk.extramodintegrations.ExMIMod.gui;
 
@@ -35,9 +27,9 @@ public class UIUtils {
         "metric.format.5", "metric.format.6", "metric.format.7", "metric.format.8", "metric.format.9"
     };
 
-    public static OrderedText cookTime(int ticks) {
+    public static FormattedCharSequence cookTime(int ticks) {
         float secs = ticks / 20f;
-        return gui("cook_time", secs).asOrderedText();
+        return gui("cook_time", secs).getVisualOrderText();
     }
 
     public static void cookTime(WidgetHolder widgets, int ticks, int x, int y) {
@@ -45,24 +37,25 @@ public class UIUtils {
     }
 
     public static void cookArrow(WidgetHolder widgets, int ticks, int x, int y) {
-        widgets.addFillingArrow(x, y, ticks * 50).tooltip((x1, y1) -> List.of(TooltipComponent.of(cookTime(ticks))));
+        widgets.addFillingArrow(x, y, ticks * 50).tooltip((x1, y1) -> List.of(ClientTooltipComponent.create(cookTime(ticks))));
     }
 
-    public static Text metricNumber(int number) {
-        int power = MathHelper.clamp((int) Math.log10(number), 0, 9) / 3 * 3;
+    public static Component metricNumber(int number) {
+        int power = Mth.clamp((int) Math.log10(number), 0, 9) / 3 * 3;
         double chopped = (double) number / Math.pow(10, power);
         return gui(suffixes[power], chopped);
     }
 
-    public static void drawSlotHightlight(DrawContext context, int x, int y, int w, int h) {
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 200);
+    public static void drawSlotHightlight(GuiGraphics context, int x, int y, int w, int h) {
+        context.pose().pushPose();
+        context.pose().translate(0, 0, 200);
         RenderSystem.colorMask(true, true, true, false);
         context.fill(x, y, x + w, y + h, -2130706433);
         RenderSystem.colorMask(true, true, true, true);
-        context.getMatrices().pop();
+        context.pose().popPose();
     }
 
+/*
     public static void renderFluid(MatrixStack matrices, FluidVariant fluid, int x, int areaY,
                                    float areaHeight, float fluidHeight, float fluidWidth) {
         Sprite[] sprites = FluidVariantRendering.getSprites(fluid);
@@ -124,4 +117,5 @@ public class UIUtils {
         bufferBuilder.vertex(model, x1, y0, 1.0F).color(r, g, b, 1.0F).texture(uMax, vMin).next();
         bufferBuilder.vertex(model, x0, y0, 1.0F).color(r, g, b, 1.0F).texture(uMin, vMin).next();
     }
+ */
 }
