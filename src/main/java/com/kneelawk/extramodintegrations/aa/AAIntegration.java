@@ -6,6 +6,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import com.kneelawk.extramodintegrations.AbstractAAIntegration;
+import com.kneelawk.extramodintegrations.aa.handler.CoffeeMachineHandler;
+import com.kneelawk.extramodintegrations.aa.handler.CrusherHandler;
+import com.kneelawk.extramodintegrations.aa.handler.PoweredFurnaceHandler;
 import com.kneelawk.extramodintegrations.aa.recipe.CoffeeMachineEmiRecipe;
 import com.kneelawk.extramodintegrations.aa.recipe.CrushingEmiRecipe;
 import com.kneelawk.extramodintegrations.aa.recipe.EmpoweringEmiRecipe;
@@ -17,6 +20,8 @@ import com.kneelawk.extramodintegrations.util.NamedEmiRecipeCategory;
 import de.ellpeck.actuallyadditions.api.ActuallyAdditionsAPI;
 import de.ellpeck.actuallyadditions.mod.blocks.ActuallyBlocks;
 import de.ellpeck.actuallyadditions.mod.crafting.ActuallyRecipes;
+import de.ellpeck.actuallyadditions.mod.inventory.ActuallyContainers;
+import de.ellpeck.actuallyadditions.mod.inventory.gui.GuiCoffeeMachine;
 import de.ellpeck.actuallyadditions.mod.items.ActuallyItems;
 import de.ellpeck.actuallyadditions.mod.items.base.ItemEnergy;
 import de.ellpeck.actuallyadditions.mod.util.CapHelper;
@@ -25,6 +30,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.Bounds;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -108,5 +114,13 @@ public class AAIntegration extends AbstractAAIntegration {
             if (effects == null) return null;
             return Arrays.asList(effects);
         }));
+
+        registry.addExclusionArea(GuiCoffeeMachine.class, (screen, consumer) -> {
+            consumer.accept(new Bounds(screen.getGuiLeft() -30, screen.getGuiTop() + 1, 26, 93));
+        });
+
+        registry.addRecipeHandler(ActuallyContainers.COFFEE_MACHINE_CONTAINER.get(), new CoffeeMachineHandler());
+        registry.addRecipeHandler(ActuallyContainers.FURNACE_DOUBLE_CONTAINER.get(), new PoweredFurnaceHandler());
+        registry.addRecipeHandler(ActuallyContainers.GRINDER_CONTAINER.get(), new CrusherHandler());
     }
 }
